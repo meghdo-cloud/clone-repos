@@ -20,7 +20,16 @@ if [ -z "$SOURCE_REPO" ] || [ -z "$GIT_ORG" ]; then
     echo "Usage: $0 --source-repo <SOURCE_REPO> --git-org <GIT_ORG>"
     exit 1
 fi
-GITHUB_TOKEN=$(gcloud secrets versions access latest --secret="github-token")
+gcloud config set project $PROJECTID
+GITHUB_TOKEN=$(gcloud secrets versions access 1 --secret="github-token")
+
+mkdir ~/.ssh
+
+gcloud secrets versions access 1 --secret="clone_ssh" --out-file= ~/.ssh/id_rsa
+gcloud secrets versions access 1 --secret="known_hosts" --out-file= ~/.ssh/known_hosts
+
+chmod 600 ~/.ssh/id_rsa
+chmod 600 ~/.ssh/known_hosts
 
 # Clone the source repository
 git clone git@github.com:meghdo-cloud/$SOURCE_REPO.git
