@@ -20,16 +20,18 @@ if [ -z "$SOURCE_REPO" ] || [ -z "$GIT_ORG" ]; then
     echo "Usage: $0 --source-repo <SOURCE_REPO> --git-org <GIT_ORG>"
     exit 1
 fi
+sleep 10
+gcloud auth application-default login
 gcloud config set project $PROJECTID
 GITHUB_TOKEN=$(gcloud secrets versions access 1 --secret="github-token")
 
-mkdir ~/.ssh
+mkdir /root/.ssh
 
-gcloud secrets versions access 1 --secret="clone_ssh" --out-file= ~/.ssh/id_rsa
-gcloud secrets versions access 1 --secret="known_hosts" --out-file= ~/.ssh/known_hosts
+gcloud secrets versions access 1 --secret="clone_ssh" --out-file=/root/.ssh/id_rsa
+gcloud secrets versions access 1 --secret="known_hosts" --out-file=/root/.ssh/known_hosts
 
-chmod 600 ~/.ssh/id_rsa
-chmod 600 ~/.ssh/known_hosts
+chmod 600 /root/.ssh/id_rsa
+chmod 600 /root/.ssh/known_hosts
 
 # Clone the source repository
 git clone git@github.com:meghdo-cloud/$SOURCE_REPO.git
@@ -38,7 +40,7 @@ cd $SOURCE_REPO
 if [ -n "$GROUP" ] ; then
   GRP_PATH=$(echo "$GROUP" | awk -F. '{for(i=1;i<NF;i++) printf "%s/", $i; printf $NF}')
   OLD_DIR="src/main/java/cloud/meghdo/drizzle"
-  NEW_DIR="src/main/$GRP_PATH/drizzle"
+  NEW_DIR="src/main/java/$GRP_PATH/drizzle"
   find . -path ./.git -prune -o -type f -exec sed -i "s|cloud/meghdo|$GRP_PATH|g" {} +
   find . -path ./.git -prune -o -type f -exec sed -i "s/cloud.meghdo/$GROUP/g" {} +
 

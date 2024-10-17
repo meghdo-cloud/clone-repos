@@ -19,7 +19,7 @@ RUN curl -o /tmp/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/relea
     /usr/local/gcloud/google-cloud-sdk/install.sh --quiet
 
 # Add gcloud to PATH
-ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+ENV PATH=$PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
 # Clean up
 RUN rm /tmp/google-cloud-sdk.tar.gz
