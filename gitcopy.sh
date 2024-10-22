@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x
+
 # Check if enough arguments are supplied
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -21,20 +22,19 @@ if [ -z "$SOURCE_REPO" ] || [ -z "$GIT_ORG" ]; then
     exit 1
 fi
 sleep 10
-gcloud auth application-default login
-gcloud config set project $PROJECTID
-GITHUB_TOKEN=$(gcloud secrets versions access 1 --secret="github-token")
 
-mkdir /root/.ssh
 
-gcloud secrets versions access 1 --secret="clone_ssh" --out-file=/root/.ssh/id_rsa
-gcloud secrets versions access 1 --secret="known_hosts" --out-file=/root/.ssh/known_hosts
+set +x
+GITHUB_TOKEN=$(< /root/token)
+set -x
+if [ -z $GITHUB_TOKEN ]; then
+ echo "Gihub token empty, aborting"
+ exit 1
+fi
 
-chmod 600 /root/.ssh/id_rsa
-chmod 600 /root/.ssh/known_hosts
 
 # Clone the source repository
-git clone git@github.com:meghdo-cloud/$SOURCE_REPO.git
+git clone https://github.com/meghdo-cloud/$SOURCE_REPO.git
 cd $SOURCE_REPO
 
 if [ -n "$GROUP" ] ; then
@@ -63,14 +63,30 @@ find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo\/drizzle/$PROJECT\/
 git config user.name "Jenkins"
 git config user.email "jenkinci@meghdo.cloud"
 
-
+WEBHOOK="https://jenkins.$DNS/github-webhook/"
 # Note: The remote URL should be set up in Terraform or separately
 # Assuming the remote has already been added for the new repository
 git remote remove origin
-
+set +x
+# create a new repo
 curl -H "Authorization: token $GITHUB_TOKEN" -d '{"name":"'"$SOURCE_REPO"'","private":true}' https://api.github.com/orgs/$GIT_ORG/repos
+# update the webhook
+curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json" -X POST \
+             -d '{
+                    "name": "web",
+                    "active": true,
+                    "events": ["push", "pull_request"],
+                    "config": {
+                        "url": "$WEBHOOK",
+                        "content_type": "json",
+                        "insecure_ssl": "0"
+                    }
+                 }' \
+             https://api.github.com/repos/$GIT_ORG/$SOURCE_REPO/hooks
 
 git remote add origin https://$GITHUB_TOKEN@github.com/$GIT_ORG/$SOURCE_REPO.git
+
+set -x
 
 git add .
 git commit -m "Modified keywords and moved to new organization"

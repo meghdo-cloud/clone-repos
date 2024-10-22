@@ -1,0 +1,37 @@
+{{- range .Values.jobs }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: clone-repo-{{ .jobName }}
+  namespace: clone-repos
+  annotations:
+    sidecar.istio.io/inject: "false"
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: {{ $.Values.serviceAccount }}
+      containers:
+        - name: clone-repos
+          image: {{ $.Values.image }}
+          args:
+          {{- range $key, $value := .arguments }}
+          - "--{{ $key }}"
+          - "{{ $value }}"
+          {{- end }}
+          volumeMounts:
+            - mountPath: "/root/token"
+              subPath: "token"
+              name: github-token
+      restartPolicy: Never
+      volumes:
+        - name: github-token
+          csi:
+            driver: secrets-store-gke.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: github-token
+---
+{{- end }}

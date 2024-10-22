@@ -1,0 +1,39 @@
+image: meghdo/clone-repos:v1.3
+serviceAccount: clone-repos
+project_id: meghdo-4567
+secret:
+  github_token: github-token
+jobs:
+-  jobName: drizzle
+   arguments:
+     source-repo: "drizzle"
+     git-org: "byngtech"
+     dns: "breeze.com"
+     group: "com.breeze.snow"
+     projectid: "meghdo-4567"
+     project: "breeze"
+     directory: "true"
+-  jobName: jenkins-jobs
+   arguments:
+     source-repo: "jenkins-jobs"
+     git-org: "byngtech"
+     dns: "breeze.com"
+     group: "com.breeze.snow"
+     projectid: "meghdo-4567"
+     project: "breeze"
+-  jobName: shared-libraries
+   arguments:
+     source-repo: "shared-libraries"
+     git-org: "byngtech"
+     dns: "breeze.com"
+     group: "com.breeze.snow"
+     projectid: "meghdo-4567"
+     project: "breeze"
+-  jobName: java17-primer
+   arguments:
+     source-repo: "java17-primer"
+     git-org: "byngtech"
+     dns: "breeze.com"
+     group: "com.breeze.snow"
+     projectid: "meghdo-4567"
+     project: "breeze"
