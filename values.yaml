@@ -1,6 +1,7 @@
 image: meghdo/clone-repos:v1.3
 serviceAccount: clone-repos
 project_id: meghdo-4567
+create_secret: false
 secret:
   github_token: github-token
 jobs:
