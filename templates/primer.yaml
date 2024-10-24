@@ -1,0 +1,36 @@
+{{- if .Values.primer_seed }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: primer-seed-{{ .Values.primerepo }}
+  namespace: clone-repos
+  annotations:
+    sidecar.istio.io/inject: "false"
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: clone-repos
+      containers:
+        - name: primer-seed
+          image: {{ .Values.primerimage }}
+          args:
+            - "--primer-repo"
+            - {{ quote .Values.primerepo }}
+            - "--git-org"
+            - {{ quote .Values.gitorg }}
+          volumeMounts:
+            - mountPath: "/root/token"
+              subPath: "token"
+              name: github-token
+      restartPolicy: Never
+      volumes:
+        - name: github-token
+          csi:
+            driver: secrets-store-gke.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: github-token
+  {{- end }}

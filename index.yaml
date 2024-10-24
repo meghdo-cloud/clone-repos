@@ -3,7 +3,17 @@ entries:
   clone-repos:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-10-23T22:38:25.4812128+01:00"
+    created: "2024-10-24T23:39:26.5399411+01:00"
+    description: A Helm chart for Kubernetes
+    digest: bb2d525706f1132c299004a68e961c96527d1dc286cce46a378df2023fecb620
+    name: clone-repos
+    type: application
+    urls:
+    - https://meghdo-cloud.github.io/clone-repos/clone-repos-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-10-24T23:39:26.5399411+01:00"
     description: A Helm chart for Kubernetes
     digest: 14261b3f498626144e3dd6303f1bb827a5d685673bf7f61167422be9424cf3f6
     name: clone-repos
@@ -13,7 +23,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-10-23T22:38:25.4812128+01:00"
+    created: "2024-10-24T23:39:26.5393361+01:00"
     description: A Helm chart for Kubernetes
     digest: b4a9d99e659ecb5a5e9477b6a1ab9058f914ebd019d9eaf684a918fb1cdf8af6
     name: clone-repos
@@ -21,4 +31,4 @@ entries:
     urls:
     - https://meghdo-cloud.github.io/clone-repos/clone-repos-0.1.0.tgz
     version: 0.1.0
-generated: "2024-10-23T22:38:25.4812128+01:00"
+generated: "2024-10-24T23:39:26.5388325+01:00"

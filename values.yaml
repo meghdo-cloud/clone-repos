@@ -14,14 +14,6 @@ jobs:
      projectid: "meghdo-4567"
      project: "breeze"
      directory: "true"
--  jobName: jenkins-jobs
-   arguments:
-     source-repo: "jenkins-jobs"
-     git-org: "byngtech"
-     dns: "breeze.com"
-     group: "com.breeze.snow"
-     projectid: "meghdo-4567"
-     project: "breeze"
 -  jobName: shared-libraries
    arguments:
      source-repo: "shared-libraries"
@@ -38,3 +30,9 @@ jobs:
      group: "com.breeze.snow"
      projectid: "meghdo-4567"
      project: "breeze"
+# Primer job addition to seed -variables
+primer_seed: true
+primerimage: meghdo/primer-seed:v0.2
+primerepo: java17-primer
+gitorg: byngtech
+
