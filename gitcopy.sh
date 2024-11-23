@@ -57,6 +57,8 @@ find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-cloud/$GIT_ORG/g" {
 find . -path ./.git -prune -o -type f -exec sed -i "s/europe-west1/$REGION/g" {} +
 find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo.cloud/$DNS/g" {} +
 find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-cluster/$PROJECT-cluster/g" {} +
+find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-database/$PROJECT-database/g" {} +
+find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-instance/$PROJECT-instance/g" {} +
 find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo\/drizzle/$PROJECT\/drizzle/g" {} +
 
 # Set up Git configuration
