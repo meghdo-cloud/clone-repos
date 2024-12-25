@@ -1,37 +1,21 @@
-image: meghdo/clone-repos:v1.4
+image: meghdo/clone-repos:v1.9
 serviceAccount: clone-repos
 project_id: meghdo-4567
 create_secret: false
 secret:
   github_token: github-token
 jobs:
--  jobName: drizzle
+-  jobName: drizzlejava
    arguments:
-     source-repo: "drizzle"
+     source-repo: "drizzlejava"
      git-org: "byngtech"
      dns: "breeze.com"
      group: "com.breeze.snow"
      projectid: "meghdo-4567"
      project: "breeze"
      directory: "true"
--  jobName: shared-libraries
-   arguments:
-     source-repo: "shared-libraries"
-     git-org: "byngtech"
-     dns: "breeze.com"
-     group: "com.breeze.snow"
-     projectid: "meghdo-4567"
-     project: "breeze"
--  jobName: java17-primer
-   arguments:
-     source-repo: "java17-primer"
-     git-org: "byngtech"
-     dns: "breeze.com"
-     group: "com.breeze.snow"
-     projectid: "meghdo-4567"
-     project: "breeze"
 # Primer job addition to seed -variables
-primer_seed: true
+primer_seed: false
 primerimage: meghdo/primer-seed:v0.2
 primerepo: java17-primer
 gitorg: byngtech

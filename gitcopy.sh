@@ -33,16 +33,21 @@ if [ -z $GITHUB_TOKEN ]; then
 fi
 
 
-# Clone the source repository
-git clone https://github.com/meghdo-cloud/$SOURCE_REPO.git
-cd $SOURCE_REPO
+# Create a temporary directory for the template
+TEMP_DIR="template_files"
+mkdir -p "$TEMP_DIR"
+
+# Clone only the latest commit and copy files without Git history
+git clone --depth 1 https://github.com/meghdo-cloud/$SOURCE_REPO.git "$TEMP_DIR"
+cd "$TEMP_DIR"
+rm -rf .git
 
 if [ -n "$GROUP" ] ; then
   GRP_PATH=$(echo "$GROUP" | awk -F. '{for(i=1;i<NF;i++) printf "%s/", $i; printf $NF}')
   OLD_DIR="src/main/java/cloud/meghdo/drizzle"
   NEW_DIR="src/main/java/$GRP_PATH/drizzle"
-  find . -path ./.git -prune -o -type f -exec sed -i "s|cloud/meghdo|$GRP_PATH|g" {} +
-  find . -path ./.git -prune -o -type f -exec sed -i "s/cloud.meghdo/$GROUP/g" {} +
+  find . -type f -exec sed -i "s|cloud/meghdo|$GRP_PATH|g" {} +
+  find . -type f -exec sed -i "s/cloud.meghdo/$GROUP/g" {} +
 
   if [ -n "$DIRECTORY" ]; then
     mkdir -p "$(dirname "$NEW_DIR")"
@@ -52,23 +57,21 @@ fi
 
 
 
-find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-4567/$PROJECTID/g" {} +
-find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-cloud/$GIT_ORG/g" {} +
-find . -path ./.git -prune -o -type f -exec sed -i "s/europe-west1/$REGION/g" {} +
-find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo.cloud/$DNS/g" {} +
-find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-cluster/$PROJECT-cluster/g" {} +
-find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-database/$PROJECT-database/g" {} +
-find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo-instance/$PROJECT-instance/g" {} +
-find . -path ./.git -prune -o -type f -exec sed -i "s/meghdo\/drizzle/$PROJECT\/drizzle/g" {} +
+find . -type f -exec sed -i "s/meghdo-4567/$PROJECTID/g" {} +
+find . -type f -exec sed -i "s/meghdo-cloud/$GIT_ORG/g" {} +
+find . -type f -exec sed -i "s/europe-west1/$REGION/g" {} +
+find . -type f -exec sed -i "s/meghdo.cloud/$DNS/g" {} +
+find . -type f -exec sed -i "s/meghdo-cluster/$PROJECT-cluster/g" {} +
+find . -type f -exec sed -i "s/meghdo-database/$PROJECT-database/g" {} +
+find . -type f -exec sed -i "s/meghdo-instance/$PROJECT-instance/g" {} +
+find . -type f -exec sed -i "s/meghdo\/drizzle/$PROJECT\/drizzle/g" {} +
 
 # Set up Git configuration
+git init
 git config user.name "Jenkins"
 git config user.email "jenkinci@meghdo.cloud"
 
 WEBHOOK="https://jenkins.$DNS/github-webhook/"
-# Note: The remote URL should be set up in Terraform or separately
-# Assuming the remote has already been added for the new repository
-git remote remove origin
 set +x
 # create a new repo
 curl -H "Authorization: token $GITHUB_TOKEN" -d '{"name":"'"$SOURCE_REPO"'","private":true}' https://api.github.com/orgs/$GIT_ORG/repos
@@ -79,7 +82,7 @@ curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/json"
                     "active": true,
                     "events": ["push", "pull_request"],
                     "config": {
-                        "url": "$WEBHOOK",
+                        "url": "'"$WEBHOOK"'",
                         "content_type": "json",
                         "insecure_ssl": "0"
                     }
@@ -92,9 +95,8 @@ set -x
 
 git add .
 git commit -m "Modified keywords and moved to new organization"
-
-
-git push --set-upstream origin main
+git branch -M main
+git push -u origin main
 # Clean up
 cd ..
-rm -rf "$SOURCE_REPO"
+rm -rf "$TEMP_DIR"

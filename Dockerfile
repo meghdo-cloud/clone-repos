@@ -17,8 +17,10 @@ WORKDIR /usr/src/app
 # Copy the shell script into the container
 COPY gitcopy.sh .
 
-# Set the script permissions
-RUN chmod +x gitcopy.sh
+RUN dos2unix gitcopy.sh && \
+    chmod +x gitcopy.sh && \
+    # Verify the file exists and is executable
+    ls -la gitcopy.sh
 
 # The command that runs the shell script
-ENTRYPOINT ["./gitcopy.sh"]
+ENTRYPOINT ["/bin/bash", "./gitcopy.sh"]
