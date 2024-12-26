@@ -14,9 +14,5 @@ jobs:
      projectid: "meghdo-4567"
      project: "breeze"
      directory: "true"
-# Primer job addition to seed -variables
-primer_seed: false
-primerimage: meghdo/primer-seed:v0.2
-primerepo: java17-primer
-gitorg: byngtech
+
 

@@ -47,7 +47,7 @@ if [ -n "$GROUP" ] ; then
   OLD_DIR="src/main/java/cloud/meghdo/drizzle"
   NEW_DIR="src/main/java/$GRP_PATH/drizzle"
   find . -type f -exec sed -i "s|cloud/meghdo|$GRP_PATH|g" {} +
-  find . -type f -exec sed -i "s/cloud.meghdo/$GROUP/g" {} +
+  find . -type f -exec sed -i "s/cloud\.meghdo/$GROUP/g" {} +
 
   if [ -n "$DIRECTORY" ]; then
     mkdir -p "$(dirname "$NEW_DIR")"
