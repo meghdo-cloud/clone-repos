@@ -4,21 +4,24 @@ set -x
 # Check if enough arguments are supplied
 while [[ "$#" -gt 0 ]]; do
     case $1 in
+        --source-org) SOURCE_ORG="$2"; shift ;;
         --source-repo) SOURCE_REPO="$2"; shift ;;
+        --source-pid) SOURCE_PID="$2"; shift ;;
         --git-org) GIT_ORG="$2"; shift ;;
         --dns) DNS="$2"; shift ;;
         --project) PROJECT="$2"; shift ;;
         --projectid) PROJECTID="$2"; shift ;;
         --region) REGION="$2"; shift ;;
         --group) GROUP="$2"; shift ;;
+        --db-host) DB_HOST="$2"; shift ;;
         --directory) DIRECTORY="$2"; shift;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
 done
-if [ -z "$SOURCE_REPO" ] || [ -z "$GIT_ORG" ]; then
+if [ -z "$SOURCE_ORG" ] || [ -z "$SOURCE_REPO" ] || [ -z "$GIT_ORG" ]; then
     echo "Missing required arguments"
-    echo "Usage: $0 --source-repo <SOURCE_REPO> --git-org <GIT_ORG>"
+    echo "Usage: $0  --source-org <SOURCE_ORG> --source-repo <SOURCE_REPO> --git-org <GIT_ORG>"
     exit 1
 fi
 sleep 10
@@ -38,7 +41,7 @@ TEMP_DIR="template_files"
 mkdir -p "$TEMP_DIR"
 
 # Clone only the latest commit and copy files without Git history
-git clone --depth 1 https://github.com/meghdo-cloud/$SOURCE_REPO.git "$TEMP_DIR"
+git clone --depth 1 https://github.com/$SOURCE_ORG/$SOURCE_REPO.git "$TEMP_DIR"
 cd "$TEMP_DIR"
 rm -rf .git
 
@@ -57,13 +60,15 @@ fi
 
 
 
-find . -type f -exec sed -i "s/meghdo-4567/$PROJECTID/g" {} +
-find . -type f -exec sed -i "s/meghdo-cloud/$GIT_ORG/g" {} +
+find . -type f -exec sed -i "s/$SOURCE_PID/$PROJECTID/g" {} +
+find . -type f -exec sed -i "s/$SOURCE_ORG/$GIT_ORG/g" {} +
 find . -type f -exec sed -i "s/europe-west1/$REGION/g" {} +
 find . -type f -exec sed -i "s/meghdo.cloud/$DNS/g" {} +
 find . -type f -exec sed -i "s/meghdo-cluster/$PROJECT-cluster/g" {} +
 find . -type f -exec sed -i "s/meghdo-database/$PROJECT-database/g" {} +
 find . -type f -exec sed -i "s/meghdo-instance/$PROJECT-instance/g" {} +
+find . -type f -exec sed -i "s/meghdo-ingress-gateway/$PROJECT-ingress-gateway/g" {} +
+find . -type f -exec sed -i "s/meghdo-instance.ca9m0486s1c6.us-east-1.rds.amazonaws.com/$DB_HOST/g" {} +
 find . -type f -exec sed -i "s/meghdo\/drizzle/$PROJECT\/drizzle/g" {} +
 
 # Set up Git configuration

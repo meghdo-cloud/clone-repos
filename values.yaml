@@ -1,18 +1,34 @@
-image: meghdo/clone-repos:v1.9
-serviceAccount: clone-repos
-project_id: meghdo-4567
+image: meghdo/clone-repos:v2.2
+serviceaccount:
+  name: clone-repos
+  automount: true
+cloudProvider: aws
+driver: secrets-store.csi.k8s.io
+gcp:
+  project_id: meghdo-4567
+aws:
+  region: us-east-1
+  account_no: 354918396806
 create_secret: false
 secret:
-  github_token: github-token
+  github_token: git_admin_token
 jobs:
--  jobName: drizzlejava
+-  jobName: drizzlepython
    arguments:
-     source-repo: "drizzlejava"
+     source-org: "meghdo-aws"
+     source-repo: "drizzlepython"
+     source-pid: "meghdo-4567"
      git-org: "byngtech"
      dns: "breeze.com"
-     group: "com.breeze.snow"
-     projectid: "meghdo-4567"
      project: "breeze"
+     projectid: "meghdo-4470"
+     region: "europe-west2"
+     group: "com.breeze.snow"
+     db-host: "meghdo-database-host"
      directory: "true"
+
+
+
+
 
 
