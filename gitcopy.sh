@@ -63,9 +63,10 @@ fi
 find . -type f -exec sed -i "s/$SOURCE_PID/$PROJECTID/g" {} +
 find . -type f -exec sed -i "s/$SOURCE_ORG/$GIT_ORG/g" {} +
 find . -type f -exec sed -i "s/europe-west1/$REGION/g" {} +
+find . -type f -exec sed -i "s/us-east-1/$REGION/g" {} +
 find . -type f -exec sed -i "s/meghdo.cloud/$DNS/g" {} +
 find . -type f -exec sed -i "s/meghdo-cluster/$PROJECT-cluster/g" {} +
-find . -type f -exec sed -i "s/meghdo-database/$PROJECT-database/g" {} +
+find . -type f -exec sed -i -E "s/meghdo(-|_)database/$PROJECT\1database/g" {} +
 find . -type f -exec sed -i "s/meghdo-instance/$PROJECT-instance/g" {} +
 find . -type f -exec sed -i "s/meghdo-ingress-gateway/$PROJECT-ingress-gateway/g" {} +
 find . -type f -exec sed -i "s/meghdo-instance.ca9m0486s1c6.us-east-1.rds.amazonaws.com/$DB_HOST/g" {} +
