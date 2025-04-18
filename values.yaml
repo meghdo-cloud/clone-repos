@@ -9,6 +9,7 @@ gcp:
 aws:
   region: us-east-1
   account_no: 354918396806
+  account_name: meghdo
 create_secret: false
 secret:
   github_token: git_admin_token
